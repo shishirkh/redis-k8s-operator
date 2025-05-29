@@ -1,0 +1,12 @@
+# appconfig.yaml
+apiVersion: mygroup.dev/v1
+kind: AppConfig
+metadata:
+  name: auth
+spec:
+  version: "7.2"
+  replicas: 3
+  sentinel:
+    enabled: true
+    replicas: 3
+

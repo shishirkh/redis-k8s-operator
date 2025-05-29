@@ -1,2 +1,1 @@
-# redis-k8s-operator
-redis-k8s-operator
+# k8s-operator-for-redis

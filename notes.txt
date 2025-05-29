@@ -1,0 +1,51 @@
+docker build -t redis-operator:0.35 . --platform linux/amd64
+kubectl apply -f deployment.yml 
+kubectl apply -f deployment.yml 
+kubectl delete Appconfig r1
+kubectl apply -f appconfig.yml 
+
+to do:
+1. sentinel-reset as internal cron. 
+2. master link checker and fixer as internal cron. 
+3. visualiser.
+4. start cluster mode. 
+
+role:master
+connected_slaves:2
+slave0:ip=10.1.1.227,port=6379,state=online,offset=5977,lag=1
+slave1:ip=10.1.1.226,port=6379,state=online,offset=5977,lag=0
+
+
+redis-cli -c info replication  
+
+redis-cli -h auth-0.auth-svc -p 6379 INFO replication
+redis-cli -h auth-1.auth-svc -p 6379 INFO replication
+redis-cli -h auth-2.auth-svc -p 6379 INFO replication
+info replication 
+
+
+1. m - r1. s - r2, r3. 
+2. m - r3, s - r1, r2. 
+3. m - r2, s - r1, r3. 
+4. m - r3, s - r1, r2.
+5. m - r1, s - r12 r3.
+
+not able to handle m and s going down together -> sentinel gets confused. 
+
+
+redis-cli -h auth-sentinel-0.auth-sentinel-svc -p 26379 INFO sentinel
+redis-cli -h auth-sentinel-1.auth-sentinel-svc -p 26379 INFO sentinel 
+redis-cli -h auth-sentinel-2.auth-sentinel-svc -p 26379 INFO sentinel 
+info sentinels
+
+redis-cli -h auth-sentinel-0.auth-sentinel-svc -p 26379 SENTINEL slaves master mymaster sentinel
+redis-cli -h auth-sentinel-1.auth-sentinel-svc -p 26379 INFO sentinel 
+redis-cli -h auth-sentinel-2.auth-sentinel-svc -p 26379 INFO sentinel 
+
+redis-cli -h auth-sentinel-0.auth-sentinel-svc -p 26379 SENTINEL RESET mymaster
+redis-cli -h auth-sentinel-1.auth-sentinel-svc -p 26379 SENTINEL RESET mymaster
+redis-cli -h auth-sentinel-2.auth-sentinel-svc -p 26379 SENTINEL RESET mymaster
+
+1. make changes to redis entrypoint.
+
+

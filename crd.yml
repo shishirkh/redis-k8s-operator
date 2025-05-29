@@ -1,0 +1,41 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: appconfigs.mygroup.dev
+spec:
+  group: mygroup.dev
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                version:
+                  type: string
+                  description: Redis image version (e.g., "7.2")
+                replicas:
+                  type: integer
+                  minimum: 1
+                  description: Number of Redis pods (1 = master only, >1 includes replicas)
+                sentinel:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                      description: Enable Redis Sentinel HA
+                    replicas:
+                      type: integer
+                      minimum: 1
+                      description: Number of Redis Sentinel pods
+  scope: Namespaced
+  names:
+    plural: appconfigs
+    singular: appconfig
+    kind: AppConfig
+    shortNames:
+    - acfg

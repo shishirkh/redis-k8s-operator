@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kopf-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kopf-operator
+  template:
+    metadata:
+      labels:
+        app: kopf-operator
+    spec:
+      serviceAccountName: kopf-operator
+      containers:
+        - name: operator
+          image: redis-operator:0.35
+          imagePullPolicy: IfNotPresent
